@@ -43,4 +43,4 @@ The program will read the input files, process the words, and display the result
 
 Example Output
 
-<img src="">
+<img src="output.png">
