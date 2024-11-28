@@ -8,7 +8,6 @@ The **Compound Word Finder** program identifies the longest and second longest c
 ### Data Structures
 - **unordered_set**: Used to store the words for O(1) average time complexity for lookups.
 - **unordered_set**: Used to cache confirmed compound words and non-compound words to avoid redundant computations.
-- **priority_queue**: Used to store compound words sorted by length to easily retrieve the longest and second longest compound words.
 
 ### Algorithm
 - **isCompoundWord**: A recursive function with memoization to check if a word can be formed by concatenating other words in the set.
