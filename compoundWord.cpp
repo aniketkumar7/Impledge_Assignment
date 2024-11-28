@@ -11,23 +11,14 @@ using namespace std;
 
 unordered_set<string> wordSet;
 unordered_set<string> confirmedCompoundWords;
-unordered_set<string> nonCompoundWords;
 
 bool isCompoundWord(const string &word)
 {
-    // Check if word has already been processed
     if (confirmedCompoundWords.find(word) != confirmedCompoundWords.end())
     {
         return true;
     }
 
-    // Check if word is not a compound word
-    if (nonCompoundWords.find(word) != nonCompoundWords.end())
-    {
-        return false;
-    }
-
-    // Base case: Empty word is not a compound word
     if (word.empty())
     {
         return false;
@@ -37,7 +28,6 @@ bool isCompoundWord(const string &word)
     {
         string prefix = word.substr(0, i);
 
-        // Check if prefix exists in dictionary
         if (wordSet.find(prefix) != wordSet.end())
         {
             // Avoid considering the word as its own compound
@@ -46,10 +36,8 @@ bool isCompoundWord(const string &word)
                 continue;
             }
 
-            // Get suffix of the word
             string suffix = word.substr(i);
 
-            // Check if suffix is either a word or can be further decomposed
             if (wordSet.find(suffix) != wordSet.end() || isCompoundWord(suffix))
             {
                 confirmedCompoundWords.insert(word);
@@ -58,7 +46,6 @@ bool isCompoundWord(const string &word)
         }
     }
 
-    nonCompoundWords.insert(word);
     return false;
 }
 
@@ -66,12 +53,9 @@ void processWordList(const string &inputFileName)
 {
     auto startTime = chrono::high_resolution_clock::now();
 
-    // Clear previous data
     wordSet.clear();
     confirmedCompoundWords.clear();
-    nonCompoundWords.clear();
 
-    // Read words from input file
     ifstream inputFile(inputFileName);
     string word;
     vector<string> allWords;
@@ -83,37 +67,34 @@ void processWordList(const string &inputFileName)
     }
     inputFile.close();
 
-    // Priority queue to store compound words sorted by length
-    priority_queue<pair<int, string>> compoundWordsByLength;
 
-    // Identify all compound words
+    vector<pair<int, string>> compoundWordsByLength;
+
     for (const string &word : allWords)
     {
         if (isCompoundWord(word))
         {
-            compoundWordsByLength.push({word.length(), word});
+            compoundWordsByLength.push_back({word.length(), word});
         }
     }
 
-    // Extract the two longest compound words
     string longestCompoundWord = "";
     string secondLongestCompoundWord = "";
 
     if (!compoundWordsByLength.empty())
     {
-        longestCompoundWord = compoundWordsByLength.top().second;
-        compoundWordsByLength.pop();
+        longestCompoundWord = compoundWordsByLength.back().second;
+        compoundWordsByLength.pop_back();
 
         if (!compoundWordsByLength.empty())
         {
-            secondLongestCompoundWord = compoundWordsByLength.top().second;
+            secondLongestCompoundWord = compoundWordsByLength.back().second;
         }
     }
 
     auto endTime = chrono::high_resolution_clock::now();
     auto processingTime = chrono::duration_cast<chrono::milliseconds>(endTime - startTime);
 
-    // Display results
     cout << "Results for " << inputFileName << ":\n";
     cout << "Longest Compound Word: " << longestCompoundWord << "\n";
     cout << "Second Longest Compound Word: " << secondLongestCompoundWord << "\n";
@@ -122,7 +103,6 @@ void processWordList(const string &inputFileName)
 
 int main()
 {
-    // Process both input files
     processWordList("Input_01.txt");
     processWordList("Input_02.txt");
 
